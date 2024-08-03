@@ -26,20 +26,21 @@ const getMe = catchAsync(async (req, res) => {
 
 const getUsers = catchAsync(async (req, res) => {
   const search = req.query.search || "";
+  const user = req.user;
 
-  const users = await User.find({
-    $or: [
+  let query = {
+    $and: [
       {
-        name: {
-          $regex: search,
-          $options: "i",
-        },
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { username: search },
+        ],
       },
-      {
-        username: search,
-      },
+      { _id: { $ne: user._id } },
     ],
-  });
+  };
+
+  const users = await User.find(query);
 
   sendResponse(res, {
     statusCode: 200,
