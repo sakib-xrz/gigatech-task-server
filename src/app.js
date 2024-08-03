@@ -7,9 +7,7 @@ const router = require("./routes/routes.js");
 
 const app = express();
 
-app.use(express.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+// middlewares
 app.use(
   cors({
     origin: ["https://appointease-client.vercel.app", "http://localhost:3000"],
@@ -17,6 +15,9 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.use(express.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(morgan("dev"));
 
 // routes
