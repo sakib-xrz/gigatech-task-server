@@ -47,8 +47,8 @@ const getUsers = catchAsync(async (req, res) => {
     users.map(async (userItem) => {
       const pendingAppointment = await Appointment.findOne({
         $or: [
-          { requester: user._id, requestee: userItem._id, status: "pending" },
-          { requester: userItem._id, requestee: user._id, status: "pending" },
+          { scheduler: user._id, participant: userItem._id, status: "pending" },
+          { scheduler: userItem._id, participant: user._id, status: "pending" },
         ],
       }).select("_id");
 
