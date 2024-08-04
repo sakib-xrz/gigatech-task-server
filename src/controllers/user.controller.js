@@ -50,11 +50,12 @@ const getUsers = catchAsync(async (req, res) => {
           { scheduler: user._id, participant: userItem._id, status: "pending" },
           { scheduler: userItem._id, participant: user._id, status: "pending" },
         ],
-      }).select("_id");
+      }).select("_id scheduler");
 
       return {
         ...userItem.toObject(),
         hasPendingAppointment: !!pendingAppointment,
+        scheduler: pendingAppointment ? pendingAppointment.scheduler : null,
         appointmentId: pendingAppointment ? pendingAppointment._id : null,
       };
     })
