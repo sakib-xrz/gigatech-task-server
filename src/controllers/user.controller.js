@@ -4,6 +4,7 @@ const sendResponse = require("../utils/sendResponse.js");
 const ApiError = require("../error/ApiError.js");
 
 const User = require("../models/user.model.js");
+const Appointment = require("../models/appointment.model.js");
 
 const getMe = catchAsync(async (req, res) => {
   const user = req.user;
@@ -40,7 +41,24 @@ const getUsers = catchAsync(async (req, res) => {
     ],
   };
 
-  const users = await User.find(query);
+  let users = await User.find(query).select("-__v");
+
+  users = await Promise.all(
+    users.map(async (userItem) => {
+      const pendingAppointment = await Appointment.findOne({
+        $or: [
+          { requester: user._id, requestee: userItem._id, status: "pending" },
+          { requester: userItem._id, requestee: user._id, status: "pending" },
+        ],
+      }).select("_id");
+
+      return {
+        ...userItem.toObject(),
+        hasPendingAppointment: !!pendingAppointment,
+        appointmentId: pendingAppointment ? pendingAppointment._id : null,
+      };
+    })
+  );
 
   sendResponse(res, {
     statusCode: 200,
