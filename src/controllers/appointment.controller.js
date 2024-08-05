@@ -128,7 +128,7 @@ const declineAppointment = catchAsync(async (req, res) => {
 });
 
 const getAppointments = catchAsync(async (req, res) => {
-  const { search, status, dateFilter, type, page = 1, limit = 10 } = req.query;
+  const { search, status, date_filter, type, page = 1, limit = 10 } = req.query;
 
   const query = {};
 
@@ -153,9 +153,9 @@ const getAppointments = catchAsync(async (req, res) => {
 
   // Distinguish between upcoming and past appointments
   const currentDate = new Date();
-  if (dateFilter === "upcoming") {
+  if (date_filter === "upcoming") {
     query.dateTime = { $gte: currentDate };
-  } else if (dateFilter === "past") {
+  } else if (date_filter === "past") {
     query.dateTime = { $lt: currentDate };
   }
 
