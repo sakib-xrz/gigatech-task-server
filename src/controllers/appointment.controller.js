@@ -128,10 +128,18 @@ const declineAppointment = catchAsync(async (req, res) => {
 });
 
 const getAppointments = catchAsync(async (req, res) => {
-  const { search, status, dateFilter, page = 1, limit = 10 } = req.query;
-  const query = {
-    $or: [{ scheduler: req.user._id }, { participant: req.user._id }],
-  };
+  const { search, status, dateFilter, type, page = 1, limit = 10 } = req.query;
+
+  const query = {};
+
+  // Filter by scheduler or participant
+  if (type === "scheduler") {
+    query.scheduler = req.user._id;
+  } else if (type === "participant") {
+    query.participant = req.user._id;
+  } else {
+    query.$or = [{ scheduler: req.user._id }, { participant: req.user._id }];
+  }
 
   // Search by title
   if (search) {
@@ -162,15 +170,6 @@ const getAppointments = catchAsync(async (req, res) => {
     .skip(skip)
     .limit(Number(limit))
     .select("-description -audioMessage");
-
-  appointments = appointments.map((appointment) => {
-    const isScheduler =
-      appointment.scheduler.toString() === req.user._id.toString();
-    return {
-      ...appointment._doc,
-      isScheduler,
-    };
-  });
 
   const total = await Appointment.countDocuments(query);
   const count = appointments.length;
