@@ -16,7 +16,7 @@ router
 
 router
   .route("/:appointmentId/cancel")
-  .patch(authGuard(), AppointmentController.cancelAppointment);
+  .delete(authGuard(), AppointmentController.cancelAppointment);
 
 router
   .route("/:appointmentId/accept")

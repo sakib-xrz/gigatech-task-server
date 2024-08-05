@@ -50,24 +50,13 @@ const cancelAppointment = catchAsync(async (req, res) => {
     );
   }
 
-  if (appointment.dateTime < new Date()) {
-    throw new ApiError(400, "Appointment has already passed");
-  }
-
-  if (appointment.status === "cancelled") {
-    throw new ApiError(400, "Appointment is already cancelled");
-  }
-
-  appointment.status = "cancelled";
-  await appointment.save();
+  await Appointment.findByIdAndDelete(appointmentId);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Appointment cancelled successfully",
-    data: {
-      appointment,
-    },
+    data: null,
   });
 });
 
