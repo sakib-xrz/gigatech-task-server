@@ -247,7 +247,7 @@ const getAppointment = catchAsync(async (req, res) => {
 
 const updateAppointment = catchAsync(async (req, res) => {
   const { appointmentId } = req.params;
-  const { title, description, dateTime, audioMessage } = req.body;
+  const { dateTime } = req.body;
 
   const appointment = await Appointment.findById(appointmentId);
 
@@ -263,19 +263,17 @@ const updateAppointment = catchAsync(async (req, res) => {
   }
 
   const updateData = {
-    title: title || appointment.title,
-    description: description || appointment.description,
     dateTime: dateTime || appointment.dateTime,
-    audioMessage: audioMessage || appointment.audioMessage,
   };
 
-  const updatedAppointment = await appointment.findByIdAndUpdate(
+  const updatedAppointment = await Appointment.findByIdAndUpdate(
     appointmentId,
     {
       $set: updateData,
     },
     {
       new: true,
+      runValidators: true,
     }
   );
 
