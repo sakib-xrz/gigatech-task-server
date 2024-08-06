@@ -34,8 +34,14 @@ const appointmentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+appointmentSchema.virtual("isDueDateExceeded").get(function () {
+  return this.dateTime < new Date();
+});
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 

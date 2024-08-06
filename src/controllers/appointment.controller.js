@@ -13,6 +13,29 @@ const createAppointment = catchAsync(async (req, res) => {
     throw new ApiError(400, "Title, dateTime and participant are required");
   }
 
+  const pendingAppointment = await Appointment.findOne({
+    $or: [
+      {
+        $and: [
+          { scheduler: user._id },
+          { participant: participant },
+          { status: { $in: ["pending"] } },
+        ],
+      },
+      {
+        $and: [
+          { participant: user._id },
+          { scheduler: participant },
+          { status: { $in: ["pending"] } },
+        ],
+      },
+    ],
+  });
+
+  if (pendingAppointment) {
+    throw new ApiError(400, "You have a pending appointment with this person");
+  }
+
   const appointmentData = {
     title,
     description,
