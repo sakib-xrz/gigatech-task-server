@@ -228,13 +228,6 @@ const getAppointment = catchAsync(async (req, res) => {
     throw new ApiError(404, "Appointment not found");
   }
 
-  const isScheduler = appointment.scheduler._id.toString() === req.user._id;
-
-  appointment = {
-    ...appointment._doc,
-    isScheduler,
-  };
-
   sendResponse(res, {
     statusCode: 200,
     success: true,
