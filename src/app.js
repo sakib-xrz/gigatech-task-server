@@ -10,7 +10,11 @@ const app = express();
 // middlewares
 app.use(
   cors({
-    origin: ["https://appointease-client.vercel.app", "http://localhost:3000"],
+    origin: [
+      "https://appointease-client.vercel.app",
+      "https://appointease-client.onrender.com",
+      "http://localhost:3000",
+    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
