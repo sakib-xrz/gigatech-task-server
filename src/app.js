@@ -11,7 +11,6 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://appointease-client.vercel.app",
       "https://appointease-client.onrender.com",
       "http://localhost:3000",
     ],
